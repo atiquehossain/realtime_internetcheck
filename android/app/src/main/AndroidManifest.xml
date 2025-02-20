@@ -6,10 +6,25 @@
     <!-- For Android 13+ (if you plan to show notifications) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
+    <!-- required -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <!-- foregroundServiceType: dataSync -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+
+    <!-- foregroundServiceType: remoteMessaging -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING" />
+
     <application
         android:label="realtime_internetcheck"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <receiver
+            android:name="be.tramckrijte.workmanager.WorkManagerReceiver"
+            android:enabled="true"
+            android:exported="true"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
