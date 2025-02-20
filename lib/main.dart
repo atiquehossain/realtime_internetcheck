@@ -1,8 +1,9 @@
-import 'dart:async';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
+import 'foreground_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
@@ -12,49 +13,30 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late StreamSubscription<List<ConnectivityResult>> _subscription;
-  List<ConnectivityResult> _connectionStatus = [];
-
   @override
   void initState() {
     super.initState();
-    _checkInternet();
-    _subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
-      setState(() {
-        _connectionStatus = result;
-      });
-    });
+    _startForegroundTask();
   }
 
-  Future<void> _checkInternet() async {
-    List<ConnectivityResult> result = await Connectivity().checkConnectivity();
-    setState(() {
-      _connectionStatus = result;
-    });
-  }
-
-  @override
-  void dispose() {
-    _subscription.cancel();
-    super.dispose();
+  void _startForegroundTask() async {
+    await FlutterForegroundTask.startService(
+      notificationTitle: "Connectivity Monitor",
+      notificationText: "Checking connectivity every 10 seconds",
+      callback: () => MyForegroundTask(),  // Updated to match latest API
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    String connectionType;
-    if (_connectionStatus.isEmpty) {
-      connectionType = "No Internet";
-    } else {
-      connectionType = _connectionStatus.map((e) => e.name).join(', ');
-    }
-
     return MaterialApp(
+      title: 'Background Connectivity Check',
       home: Scaffold(
-        appBar: AppBar(title: Text("Internet Connection Type")),
+        appBar: AppBar(title: Text('Background Connectivity')),
         body: Center(
           child: Text(
-            "Connection: $connectionType",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            'Connectivity check is running in the background.\nCheck logs for updates.',
+            textAlign: TextAlign.center,
           ),
         ),
       ),

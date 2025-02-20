@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.realtime_internetcheck"
+    namespace 'com.example.realtime_internetcheck'
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
